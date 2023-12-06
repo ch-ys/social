@@ -4,7 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yupi.yupao.common.BaseResponse;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
 import com.yupi.yupao.model.domain.DTO.UserDto;
@@ -13,6 +15,7 @@ import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
@@ -21,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -41,6 +45,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
     /**
@@ -286,6 +293,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         long userId = currentUser.getId();
         // TODO 校验用户是否合法
         return getById(userId);
+    }
+
+    /**
+     * 推荐页缓存 数据量大 更新少
+     * @param Page
+     * @param queryWrapper
+     * @return
+     */
+    @Override
+    public Page<User> cachePage(Page<User> Page, QueryWrapper<User> queryWrapper, BaseResponse<User> currentUser) {
+        String key = "recommend:userid:" + currentUser.getData().getId();
+        String pageJson = stringRedisTemplate.opsForValue().get(key);
+        if (StringUtils.isNotBlank(pageJson)){
+            Page cachePage = JSONUtil.toBean(pageJson, Page.class);
+            return cachePage;
+        }
+        Page<User> userPage = page(Page, queryWrapper);
+        String jsonStr = JSONUtil.toJsonStr(userPage);
+        try {
+            stringRedisTemplate.opsForValue().set(key,jsonStr,5, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            log.info("recommend set cache error", e);
+        }
+        return userPage;
     }
 }
 
