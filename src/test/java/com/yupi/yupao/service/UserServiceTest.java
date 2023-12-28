@@ -2,14 +2,21 @@ package com.yupi.yupao.service;
 
 // [编程学习交流圈](https://www.code-nav.cn/) 连接万名编程爱好者，一起优秀！20000+ 小伙伴交流分享、40+ 大厂嘉宾一对一答疑、100+ 各方向编程交流群、4000+ 编程问答参考
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.yupi.yupao.model.domain.entiy.User;
+import com.yupi.yupao.untils.AlgUntils;
+import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 用户服务测试
@@ -120,5 +127,34 @@ public class UserServiceTest {
         List<String> tagsList = Arrays.asList("java");
         List<User> users = userService.searchUserByTagsList(tagsList);
 
+    }
+
+    @Test
+    public void testRecommend(){
+        //定义空间
+        TreeMap<Integer, Integer> longUserTreeMap = new TreeMap<>();
+        //获取用户标签列表
+        Integer num = 3;
+        User currentUser= userService.getById(6);
+        String currentUserTags = currentUser.getTags();
+        List<String> currentUserStringList = JSONUtil.toList(currentUserTags , String.class);
+        //查询所有用户
+        List<User> userList = userService.list();
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userTags = user.getTags();
+            //排除自己
+            if (StringUtils.isBlank(userTags) || user.getId() == currentUser.getId()){
+                continue;
+            }
+            List<String> userStringList = JSONUtil.toList(userTags, String.class);
+            //计算相似度
+            int grade = AlgUntils.minDistance(currentUserStringList, userStringList);
+            longUserTreeMap.put(i, grade);
+        }
+
+        List<Map.Entry<Integer, Integer>> collect = longUserTreeMap.entrySet()
+                .stream().limit(num)
+                .collect(Collectors.toList());
     }
 }

@@ -25,7 +25,9 @@ public class Team implements Serializable {
     private Date expireTime;
 
     private Long userId;
-
+    /**
+     * 0公开 1私有 3加密
+     */
     private Integer status;
 
     private String password;

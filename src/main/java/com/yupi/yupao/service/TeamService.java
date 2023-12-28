@@ -1,10 +1,12 @@
 package com.yupi.yupao.service;
 
+import com.yupi.yupao.model.domain.VO.TeamUserVo;
 import com.yupi.yupao.model.domain.entiy.Team;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yupi.yupao.model.domain.request.TeamAddRequest;
+import com.yupi.yupao.model.domain.request.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author chenmoys
@@ -13,5 +15,21 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface TeamService extends IService<Team> {
 
+
+
     Long addTeam(TeamAddRequest team, HttpServletRequest request);
+
+    List<TeamUserVo> searchTeamUserList(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
+
+    Boolean updateTeam(TeamUpdateRequest teamUpdateRequest, HttpServletRequest httpServletRequest);
+
+    Boolean joinTeam(TeamJoinRequest teamJoinRequest);
+
+    Boolean quitTeam(TeamLeaveRequest teamLeaveRequest);
+
+    Boolean deleteTeam(Integer id, HttpServletRequest httpServletRequest);
+
+    List<TeamUserVo> listMyCreate(HttpServletRequest httpServletRequest);
+
+    List<TeamUserVo> listMyJoin(HttpServletRequest httpServletRequest);
 }

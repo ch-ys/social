@@ -301,15 +301,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public Page<User> cachePage(Page<User> Page, QueryWrapper<User> queryWrapper, BaseResponse<User> currentUser) {
-        String key = "recommend:userid:" + currentUser.getData().getId();
+    public Page<User> cachePage(Page<User> Page,HttpServletRequest httpServletRequest) {
+        //获取缓存
+        User currentUser = getCurrentUser(httpServletRequest);
+        String key = "recommend:userid:" + currentUser.getId();
         String pageJson = stringRedisTemplate.opsForValue().get(key);
+        //缓存不为空
         if (StringUtils.isNotBlank(pageJson)){
             Page cachePage = JSONUtil.toBean(pageJson, Page.class);
             return cachePage;
         }
+        //设置查询条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        //缓存为空查询数据库
         Page<User> userPage = page(Page, queryWrapper);
         String jsonStr = JSONUtil.toJsonStr(userPage);
+        //写入缓存
         try {
             stringRedisTemplate.opsForValue().set(key,jsonStr,5, TimeUnit.MINUTES);
         } catch (Exception e) {

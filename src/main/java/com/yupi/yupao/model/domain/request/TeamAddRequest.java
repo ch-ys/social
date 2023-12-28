@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * @TableName team
  */
-@TableName(value ="team")
+
 @Data
 public class TeamAddRequest implements Serializable {
 

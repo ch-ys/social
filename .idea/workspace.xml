@@ -13,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -41,30 +41,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/java/ideajava/yupao/src/main/java/com/yupi/yupao/model/domain",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.runner",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/java/ideajava/yupao/src/main/java/com/yupi/yupao/model/domain&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.runner&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -79,7 +79,7 @@
       <recent name="com.yupi.yupao.model.domain.request" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserCenterApplication">
+  <component name="RunManager" selected="JUnit.UserServiceTest.testRecommend (2)">
     <configuration name="UserServiceTest.searchUserByTagsList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="yupao-backend" />
       <extension name="coverage">
@@ -91,6 +91,54 @@
       <option name="PACKAGE_NAME" value="com.yupi.yupao.service" />
       <option name="MAIN_CLASS_NAME" value="com.yupi.yupao.service.UserServiceTest" />
       <option name="METHOD_NAME" value="searchUserByTagsList" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.testRecommend (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="yupao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.yupi.yupao.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.yupi.yupao.service" />
+      <option name="MAIN_CLASS_NAME" value="com.yupi.yupao.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="testRecommend(java.lang.Integer)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.testRecommend (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="yupao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.yupi.yupao.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.yupi.yupao.service" />
+      <option name="MAIN_CLASS_NAME" value="com.yupi.yupao.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="testRecommend" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.testRecommend" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="yupao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.yupi.yupao.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.yupi.yupao.service" />
+      <option name="MAIN_CLASS_NAME" value="com.yupi.yupao.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="testRecommend(javax.servlet.http.HttpServletRequest,java.lang.Integer)" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -119,6 +167,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserServiceTest.testRecommend (2)" />
+        <item itemvalue="JUnit.UserServiceTest.testRecommend (1)" />
+        <item itemvalue="JUnit.UserServiceTest.testRecommend" />
         <item itemvalue="JUnit.UserServiceTest.searchUserByTagsList" />
       </list>
     </recent_temporary>
@@ -155,6 +206,24 @@
       <workItem from="1701760895150" duration="7044000" />
       <workItem from="1701836360121" duration="4929000" />
       <workItem from="1701852898666" duration="9763000" />
+      <workItem from="1701871584103" duration="1133000" />
+      <workItem from="1701935263148" duration="704000" />
+      <workItem from="1702016712367" duration="40000" />
+      <workItem from="1702276439042" duration="762000" />
+      <workItem from="1702283636104" duration="607000" />
+      <workItem from="1702543650779" duration="4977000" />
+      <workItem from="1702620586776" duration="2583000" />
+      <workItem from="1702881006484" duration="5656000" />
+      <workItem from="1702963239994" duration="16192000" />
+      <workItem from="1703052965474" duration="9363000" />
+      <workItem from="1703147618195" duration="6860000" />
+      <workItem from="1703241760320" duration="1133000" />
+      <workItem from="1703480161065" duration="8970000" />
+      <workItem from="1703568701356" duration="4851000" />
+      <workItem from="1703661721467" duration="7573000" />
+      <workItem from="1703749279774" duration="1578000" />
+      <workItem from="1703761123898" duration="12000" />
+      <workItem from="1703761161794" duration="13000" />
     </task>
     <servers />
   </component>
