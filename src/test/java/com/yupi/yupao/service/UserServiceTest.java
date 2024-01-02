@@ -4,8 +4,10 @@ package com.yupi.yupao.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.untils.AlgUntils;
+import javafx.util.Pair;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
@@ -131,30 +133,48 @@ public class UserServiceTest {
 
     @Test
     public void testRecommend(){
-        //定义空间
-        TreeMap<Integer, Integer> longUserTreeMap = new TreeMap<>();
-        //获取用户标签列表
+        //相关参数
         Integer num = 3;
         User currentUser= userService.getById(6);
+        //定义空间 可限制空间节省内存 需要双重循环判定 费时间
+        ArrayList<Pair<Long,Integer>> pairs = new ArrayList<>();
+        //获取用户标签列表
         String currentUserTags = currentUser.getTags();
         List<String> currentUserStringList = JSONUtil.toList(currentUserTags , String.class);
-        //查询所有用户
-        List<User> userList = userService.list();
+        //查询用户
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.select("id","tags");
+        userQueryWrapper.isNotNull("tags");
+        List<User> userList = userService.list(userQueryWrapper);
+        //放入pairs中
         for (int i = 0; i < userList.size(); i++) {
             User user = userList.get(i);
             String userTags = user.getTags();
             //排除自己
-            if (StringUtils.isBlank(userTags) || user.getId() == currentUser.getId()){
+            if (user.getId() == currentUser.getId()){
                 continue;
             }
             List<String> userStringList = JSONUtil.toList(userTags, String.class);
             //计算相似度
-            int grade = AlgUntils.minDistance(currentUserStringList, userStringList);
-            longUserTreeMap.put(i, grade);
+            int distance = AlgUntils.minDistance(currentUserStringList, userStringList);
+            pairs.add(new Pair<>(user.getId(),distance));
         }
-
-        List<Map.Entry<Integer, Integer>> collect = longUserTreeMap.entrySet()
-                .stream().limit(num)
+        //排序挑选num
+        List<Pair<Long,Integer>> collect = pairs.stream()
+                .sorted((a,b) -> a.getValue()- b.getValue())
+                .limit(num)
                 .collect(Collectors.toList());
+        //补充信息
+        List<Long> ids = collect.stream()
+                .map(Pair::getKey)
+                .collect(Collectors.toList());
+        //map 有根据id的key 方便取出对应对象
+        Map<Long, List<User>> unSortedUserIdMap = userService.listByIds(ids).stream()
+                .collect(Collectors.groupingBy(User::getId));
+        //重新排序
+        ArrayList<User> users = new ArrayList<>(num);
+        for (Long id:ids) {
+            users.add(unSortedUserIdMap.get(id).get(0));
+        }
     }
 }

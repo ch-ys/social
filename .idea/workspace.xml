@@ -79,7 +79,7 @@
       <recent name="com.yupi.yupao.model.domain.request" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.UserServiceTest.testRecommend (2)">
+  <component name="RunManager" selected="Spring Boot.UserCenterApplication">
     <configuration name="UserServiceTest.searchUserByTagsList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="yupao-backend" />
       <extension name="coverage">
@@ -224,6 +224,9 @@
       <workItem from="1703749279774" duration="1578000" />
       <workItem from="1703761123898" duration="12000" />
       <workItem from="1703761161794" duration="13000" />
+      <workItem from="1703761436834" duration="3860000" />
+      <workItem from="1703770559120" duration="1709000" />
+      <workItem from="1703831087334" duration="16646000" />
     </task>
     <servers />
   </component>
@@ -236,5 +239,10 @@
         <PinnedItemInfo parentTag="org.springframework.session.web.http.SessionRepositoryFilter$SessionRepositoryRequestWrapper" memberName="requestedSessionInvalidated" />
       </pinned-members>
     </pin-to-top-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/yupao$UserServiceTest_testRecommend__2_.ic" NAME="UserServiceTest.testRecommend (2) Coverage Results" MODIFIED="1703771371520" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.yupi.yupao.service.*</FILTER>
+    </SUITE>
   </component>
 </project>

@@ -1,6 +1,5 @@
 package com.yupi.yupao.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -67,6 +66,5 @@ public interface UserService extends IService<User> {
 
     User getCurrentUser(HttpServletRequest request);
 
-
-    Page<User> cachePage(Page<User> userPage, HttpServletRequest request);
+    List<User> recommend(HttpServletRequest request, Integer num);
 }

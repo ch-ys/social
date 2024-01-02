@@ -178,8 +178,8 @@ public class UserController {
      * @return
      */
     @GetMapping("/recommend")
-    public BaseResponse<Page<User>> recommendUsers(long pageNum, long pageSize ,HttpServletRequest request) {
-        Page<User> userList = userService.cachePage(new Page<User>(pageNum,pageSize),request);
+    public BaseResponse<List<User>> recommendUsers(HttpServletRequest request,Integer num) {
+        List<User> userList = userService.recommend(request,num);
         return ResultUtils.success(userList);
     }
 }

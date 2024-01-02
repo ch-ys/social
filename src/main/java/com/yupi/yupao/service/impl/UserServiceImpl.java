@@ -4,15 +4,15 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yupi.yupao.common.BaseResponse;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
 import com.yupi.yupao.model.domain.DTO.UserDto;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.mapper.UserMapper;
+import com.yupi.yupao.untils.AlgUntils;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,7 +22,9 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,9 +35,6 @@ import static com.yupi.yupao.contant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户服务实现类
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Service
 @Slf4j
@@ -296,33 +295,79 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 推荐页缓存 数据量大 更新少
-     * @param Page
-     * @param queryWrapper
+     *
+     * @param httpServletRequest
+     * @param num
      * @return
      */
     @Override
-    public Page<User> cachePage(Page<User> Page,HttpServletRequest httpServletRequest) {
+    public List<User> recommend(HttpServletRequest httpServletRequest, Integer num) {
         //获取缓存
         User currentUser = getCurrentUser(httpServletRequest);
         String key = "recommend:userid:" + currentUser.getId();
-        String pageJson = stringRedisTemplate.opsForValue().get(key);
+        String Json = stringRedisTemplate.opsForValue().get(key);
         //缓存不为空
-        if (StringUtils.isNotBlank(pageJson)){
-            Page cachePage = JSONUtil.toBean(pageJson, Page.class);
-            return cachePage;
+        if (Json != null){
+            List<User> users = JSONUtil.toList(Json, User.class);
+            return users;
         }
-        //设置查询条件
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         //缓存为空查询数据库
-        Page<User> userPage = page(Page, queryWrapper);
-        String jsonStr = JSONUtil.toJsonStr(userPage);
+        List<User> users = match(currentUser,num).stream()
+                .map(this::getSafetyUser)
+                .collect(Collectors.toList());
+        String jsonStr = JSONUtil.toJsonStr(users);
         //写入缓存
         try {
             stringRedisTemplate.opsForValue().set(key,jsonStr,5, TimeUnit.MINUTES);
         } catch (Exception e) {
             log.info("recommend set cache error", e);
         }
-        return userPage;
+        return users;
     }
+
+    public List<User> match(User currentUser,Integer num){
+        //定义空间 可限制空间节省内存 需要双重循环判定 费时间
+        ArrayList<Pair<Long,Integer>> pairs = new ArrayList<>();
+        //获取用户标签列表
+        String currentUserTags = currentUser.getTags();
+        List<String> currentUserStringList = JSONUtil.toList(currentUserTags, String.class);
+        //查询用户
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.select("id","tags");
+        userQueryWrapper.isNotNull("tags");
+        List<User> userList = list(userQueryWrapper);
+        //放入pairs中
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userTags = user.getTags();
+            //排除自己
+            if (user.getId() == currentUser.getId()){
+                continue;
+            }
+            List<String> userStringList = JSONUtil.toList(userTags, String.class);
+            //计算相似度
+            int distance = AlgUntils.minDistance(currentUserStringList, userStringList);
+            pairs.add(new Pair<>(user.getId(),distance));
+        }
+        //排序挑选num
+        List<Pair<Long,Integer>> collect = pairs.stream()
+                .sorted((a,b) -> a.getValue()- b.getValue())
+                .limit(num)
+                .collect(Collectors.toList());
+        //补充信息
+        List<Long> ids = collect.stream()
+                .map(Pair::getKey)
+                .collect(Collectors.toList());
+        //map 有根据id的key 方便取出对应对象
+        Map<Long, List<User>> unSortedUserIdMap = listByIds(ids).stream()
+                .collect(Collectors.groupingBy(User::getId));
+        //重新排序
+        ArrayList<User> users = new ArrayList<>(num);
+        for (Long id:ids) {
+            users.add(unSortedUserIdMap.get(id).get(0));
+        }
+        return users;
+    }
+
 }
 

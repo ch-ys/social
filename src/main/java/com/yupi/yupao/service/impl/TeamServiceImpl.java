@@ -16,7 +16,10 @@ import com.yupi.yupao.service.TeamService;
 import com.yupi.yupao.mapper.TeamMapper;
 import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.service.UserTeamService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +30,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
-* @author chenmoys
-* @description 针对表【team(队伍)】的数据库操作Service实现
-* @createDate 2023-12-06 17:05:31
-*/
+
 @Service
 @Transactional(rollbackFor=Exception.class)
 public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
@@ -43,7 +43,8 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
     private UserService userService;
     @Resource
     private UserTeamService userTeamService;
-
+    @Resource
+    private RedissonClient redissonClient;
     private static final Long OneTeam = 1L;
 
     @Override
@@ -275,14 +276,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         if (maxNum == count1){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"队伍人员已满");
         }
-        //不能重复加入队伍
-        userTeamQueryWrapper = new QueryWrapper<>();
-        userTeamQueryWrapper.eq("teamId",teamId);
-        userTeamQueryWrapper.eq("userId",userId);
-        long count2 = userTeamService.count(userTeamQueryWrapper);
-        if (count2 > 0){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"不能重复加入队伍");
-        }
         //队伍状态验证
         Integer status = team.getStatus();
         if (TeamStatusEnum.PRIVATE.getValue() == status){
@@ -294,12 +287,36 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 throw new BusinessException(ErrorCode.PARAMS_ERROR,"加密队伍密码错误");
             }
         }
-        //关联属性
-        UserTeam userTeam = new UserTeam();
-        userTeam.setTeamId(teamId);
-        userTeam.setUserId(userId);
-        userTeam.setJoinTime(new Date());
-        return userTeamService.save(userTeam);
+        //多并发加锁 防止重复加入队伍
+        RLock lock = redissonClient.getLock("joinTeam:" + userId );
+        boolean save = false;
+        try {
+            if (lock.tryLock(0, 10, TimeUnit.SECONDS)) {
+                //不能重复加入队伍
+                userTeamQueryWrapper = new QueryWrapper<>();
+                userTeamQueryWrapper.eq("teamId", teamId);
+                userTeamQueryWrapper.eq("userId", userId);
+                long count2 = userTeamService.count(userTeamQueryWrapper);
+                if (count2 > 0) {
+                    throw new BusinessException(ErrorCode.SYSTEM_ERROR, "不能重复加入队伍");
+                }
+                //关联属性
+                UserTeam userTeam = new UserTeam();
+                userTeam.setTeamId(teamId);
+                userTeam.setUserId(userId);
+                userTeam.setJoinTime(new Date());
+                save = userTeamService.save(userTeam);
+            } else {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "加入队伍失败，请稍后重试");
+            }
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "加入队伍失败，请稍后重试");
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
+        return save;
     }
 
     @Override

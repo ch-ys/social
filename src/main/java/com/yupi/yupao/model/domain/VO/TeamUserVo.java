@@ -22,7 +22,7 @@ public class TeamUserVo implements Serializable {
 
     private Long userId;
     /**
-     * 0公开 1私有 3加密
+     * 0公开 1私有 2加密
      */
     private Integer status;
 
