@@ -25,13 +25,14 @@
     <option name="generalSettings">
       <MavenGeneralSettings>
         <option name="localRepository" value="D:\java\apache-maven-3.9.4\mvn_repo" />
-        <option name="mavenHome" value="$PROJECT_DIR$/../../../apache-maven-3.9.4" />
+        <option name="mavenHome" value="$PROJECT_DIR$/../../apache-maven-3.9.4" />
         <option name="userSettingsFile" value="D:\java\apache-maven-3.9.4\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
   </component>
   <component name="MavenRunner">
     <option name="jreName" value="#JAVA_HOME" />
+    <option name="skipTests" value="true" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -56,7 +57,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.runner&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -79,7 +80,23 @@
       <recent name="com.yupi.yupao.model.domain.request" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserCenterApplication">
+  <component name="RunManager" selected="Spring Boot.YuPaoApplication">
+    <configuration name="UserServiceTest.findTeamUsers" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="yupao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.yupi.yupao.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.yupi.yupao.service" />
+      <option name="MAIN_CLASS_NAME" value="com.yupi.yupao.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="findTeamUsers" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="UserServiceTest.searchUserByTagsList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="yupao-backend" />
       <extension name="coverage">
@@ -157,16 +174,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserCenterApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <configuration name="YuPaoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="yupao-backend" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yupi.yupao.UserCenterApplication" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yupi.yupao.YuPaoApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserServiceTest.findTeamUsers" />
         <item itemvalue="JUnit.UserServiceTest.testRecommend (2)" />
         <item itemvalue="JUnit.UserServiceTest.testRecommend (1)" />
         <item itemvalue="JUnit.UserServiceTest.testRecommend" />
@@ -227,6 +245,10 @@
       <workItem from="1703761436834" duration="3860000" />
       <workItem from="1703770559120" duration="1709000" />
       <workItem from="1703831087334" duration="16646000" />
+      <workItem from="1704196043363" duration="2251000" />
+      <workItem from="1704264758584" duration="1422000" />
+      <workItem from="1704271047718" duration="12083000" />
+      <workItem from="1704344220834" duration="1739000" />
     </task>
     <servers />
   </component>

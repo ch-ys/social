@@ -11,8 +11,8 @@
     <groupId>com.yupi</groupId>
     <artifactId>yupao-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>yupao-backend</name>
-    <description>yupao-backend</description>
+    <name>YuPao-backend</name>
+    <description>YuPao-backend</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>

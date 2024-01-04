@@ -160,18 +160,20 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
 
         List<Team> list = list(teamQueryWrapper);
         List<TeamUserVo> teamUserVoList = null;
-        if (!CollectionUtils.isEmpty(list)){
+        if (list != null){
             teamUserVoList = list.stream().map(team -> {
                 //获取队伍id
                 Long teamId = team.getId();
-                //获取在该队伍中队员的id列表
-                QueryWrapper<UserTeam> userTeamQueryWrapper = new QueryWrapper<>();
-                userTeamQueryWrapper.eq("teamId", teamId);
-                List<UserTeam> userTeamList = userTeamService.list(userTeamQueryWrapper);
-                List<Long> userTeamListIds = userTeamList.stream().map(
-                                userTeam -> userTeam.getUserId())
-                        .collect(Collectors.toList());
-                List<User> userList = userService.listByIds(userTeamListIds);
+                //获取在该队伍中队员的id列表 mybatis方案
+//                QueryWrapper<UserTeam> userTeamQueryWrapper = new QueryWrapper<>();
+//                userTeamQueryWrapper.eq("teamId", teamId);
+//                List<UserTeam> userTeamList = userTeamService.list(userTeamQueryWrapper);
+//                List<Long> userTeamListIds = userTeamList.stream()
+//                        .map(UserTeam::getUserId)
+//                        .collect(Collectors.toList());
+//                List<User> userList = userService.listByIds(userTeamListIds);
+                //获取在该队伍中队员的id列表 自定义sql
+                List<User> userList = userTeamService.findTeamUsers(teamId);
                 //组装
                 TeamUserVo teamUserVo = new TeamUserVo();
                 BeanUtils.copyProperties(team, teamUserVo);

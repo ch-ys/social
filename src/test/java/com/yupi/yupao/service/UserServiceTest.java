@@ -5,6 +5,7 @@ package com.yupi.yupao.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yupi.yupao.mapper.UserTeamMapper;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.untils.AlgUntils;
 import javafx.util.Pair;
@@ -31,6 +32,9 @@ public class UserServiceTest {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private UserTeamMapper userTeamMapper;
 
     /**
      * 测试添加用户
@@ -176,5 +180,12 @@ public class UserServiceTest {
         for (Long id:ids) {
             users.add(unSortedUserIdMap.get(id).get(0));
         }
+
+
+    }
+
+    @Test
+    void findTeamUsers(){
+        List<User> teamUsers = userTeamMapper.findTeamUsers(1L);
     }
 }

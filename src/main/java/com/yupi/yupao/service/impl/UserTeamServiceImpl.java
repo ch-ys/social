@@ -1,10 +1,14 @@
 package com.yupi.yupao.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.model.domain.entiy.UserTeam;
 import com.yupi.yupao.service.UserTeamService;
 import com.yupi.yupao.mapper.UserTeamMapper;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
 * @author chenmoys
@@ -15,6 +19,13 @@ import org.springframework.stereotype.Service;
 public class UserTeamServiceImpl extends ServiceImpl<UserTeamMapper, UserTeam>
     implements UserTeamService{
 
+    @Resource
+    private UserTeamMapper userTeamMapper;
+
+    @Override
+    public List<User> findTeamUsers(Long teamId) {
+        return userTeamMapper.findTeamUsers(teamId);
+    }
 }
 
 

@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.yupi.yupao.service.UserServiceTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 3, Errors: 1, Skipped: 0, Time elapsed: 8.251 s <<< FAILURE! - in com.yupi.yupao.service.UserServiceTest
+userRegister  Time elapsed: 0.045 s  <<< ERROR!
+com.yupi.yupao.exception.BusinessException: 请求参数错误
+	at com.yupi.yupao.service.UserServiceTest.userRegister(UserServiceTest.java:102)
+
+testUpdateUser  Time elapsed: 0.023 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at com.yupi.yupao.service.UserServiceTest.testUpdateUser(UserServiceTest.java:70)
+
+testGetUser  Time elapsed: 0.004 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: not <null>
+	at com.yupi.yupao.service.UserServiceTest.testGetUser(UserServiceTest.java:90)
+
+testDeleteUser  Time elapsed: 0.007 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at com.yupi.yupao.service.UserServiceTest.testDeleteUser(UserServiceTest.java:79)
+

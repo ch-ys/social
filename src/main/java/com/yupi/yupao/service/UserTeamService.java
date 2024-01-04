@@ -1,7 +1,10 @@
 package com.yupi.yupao.service;
 
+import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.model.domain.entiy.UserTeam;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author chenmoys
@@ -11,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface UserTeamService extends IService<UserTeam> {
 
 
+    List<User> findTeamUsers(Long teamId);
 }

@@ -1,7 +1,10 @@
 package com.yupi.yupao.mapper;
 
+import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.model.domain.entiy.UserTeam;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
 * @author chenmoys
@@ -11,6 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface UserTeamMapper extends BaseMapper<UserTeam> {
 
+    List<User> findTeamUsers(Long teamId);
 }
 
 

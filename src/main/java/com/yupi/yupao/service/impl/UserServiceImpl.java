@@ -12,7 +12,7 @@ import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.mapper.UserMapper;
 import com.yupi.yupao.untils.AlgUntils;
-import javafx.util.Pair;
+import com.yupi.yupao.model.domain.entiy.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;

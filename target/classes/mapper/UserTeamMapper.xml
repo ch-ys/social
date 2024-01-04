@@ -19,4 +19,10 @@
         joinTime,createTime,updateTime,
         isDelete
     </sql>
+    <select id="findTeamUsers" resultType="com.yupi.yupao.model.domain.entiy.User">
+        SELECT *
+        FROM `user`
+                 LEFT JOIN user_team on `user`.id = user_team.userId
+        WHERE teamId = #{teamId}
+    </select>
 </mapper>

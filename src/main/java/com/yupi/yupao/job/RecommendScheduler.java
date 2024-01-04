@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
