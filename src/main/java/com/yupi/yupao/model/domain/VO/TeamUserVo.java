@@ -1,4 +1,4 @@
-package com.yupi.yupao.model.domain.VO;
+package com.yupi.yupao.model.domain.vo;
 
 import com.yupi.yupao.model.domain.entiy.User;
 import lombok.Data;

@@ -1,21 +1,17 @@
 package com.yupi.yupao.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.yupao.common.BaseResponse;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.common.ResultUtils;
 import com.yupi.yupao.exception.BusinessException;
-import com.yupi.yupao.model.domain.VO.TeamUserVo;
+import com.yupi.yupao.model.domain.vo.TeamUserVo;
 import com.yupi.yupao.model.domain.request.*;
 import com.yupi.yupao.model.domain.entiy.Team;
 import com.yupi.yupao.service.TeamService;
 
-import com.yupi.yupao.service.UserTeamService;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,9 +27,6 @@ public class TeamController {
 
     @Resource
     private TeamService teamService;
-
-    @Resource
-    private UserTeamService userTeamService;
 
     @PostMapping("/add")
     public BaseResponse<Long> addTeam(TeamAddRequest teamAddRequest, HttpServletRequest request){

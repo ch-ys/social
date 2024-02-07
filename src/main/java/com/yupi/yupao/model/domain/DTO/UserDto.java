@@ -1,4 +1,4 @@
-package com.yupi.yupao.model.domain.DTO;
+package com.yupi.yupao.model.domain.dto;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;

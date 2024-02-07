@@ -20,7 +20,7 @@ create table user
     tags         varchar(1024) null comment '标签 json 列表'
 ) comment '用户';
 
--- 队伍表
+# 队伍表
 create table team
 (
     id          bigint auto_increment comment 'id' primary key,
@@ -36,7 +36,7 @@ create table team
     isDelete    tinyint  default 0 not null comment '是否删除'
 ) comment '队伍';
 
--- 用户队伍关系
+# 用户队伍关系
 create table user_team
 (
     id         bigint auto_increment comment 'id'
@@ -48,6 +48,19 @@ create table user_team
     updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     isDelete   tinyint  default 0 not null comment '是否删除'
 ) comment '用户队伍关系';
+
+# 新闻
+create table news
+(
+    id         bigint auto_increment comment 'id'
+        primary key,
+    title      varchar(256)                       null comment '标题',
+    text       text                               null comment '新闻内容',
+    createTime datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    isDelete   tinyint  default 0                 not null comment '是否删除',
+    tags       varchar(1024)                      null comment '标签 json 列表'
+) comment '用户';
 
 
 

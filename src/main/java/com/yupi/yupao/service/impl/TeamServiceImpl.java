@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
-import com.yupi.yupao.model.domain.DTO.TeamUpdateDto;
-import com.yupi.yupao.model.domain.VO.TeamUserVo;
+import com.yupi.yupao.model.domain.dto.TeamUpdateDto;
+import com.yupi.yupao.model.domain.vo.TeamUserVo;
 import com.yupi.yupao.model.domain.entiy.Team;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.model.domain.entiy.UserTeam;
@@ -16,14 +16,14 @@ import com.yupi.yupao.service.TeamService;
 import com.yupi.yupao.mapper.TeamMapper;
 import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.service.UserTeamService;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -116,11 +116,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return teamId;
     }
 
-    /**
-     * @param teamQuery
-     * @param httpServletRequest
-     * @return
-     */
+
     @Override
     public List<TeamUserVo> searchTeamUserList(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest) {
         QueryWrapper<Team> teamQueryWrapper = new QueryWrapper<>();
@@ -165,15 +161,15 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 //获取队伍id
                 Long teamId = team.getId();
                 //获取在该队伍中队员的id列表 mybatis方案
-//                QueryWrapper<UserTeam> userTeamQueryWrapper = new QueryWrapper<>();
-//                userTeamQueryWrapper.eq("teamId", teamId);
-//                List<UserTeam> userTeamList = userTeamService.list(userTeamQueryWrapper);
-//                List<Long> userTeamListIds = userTeamList.stream()
-//                        .map(UserTeam::getUserId)
-//                        .collect(Collectors.toList());
-//                List<User> userList = userService.listByIds(userTeamListIds);
+                QueryWrapper<UserTeam> userTeamQueryWrapper = new QueryWrapper<>();
+                userTeamQueryWrapper.eq("teamId", teamId);
+                List<UserTeam> userTeamList = userTeamService.list(userTeamQueryWrapper);
+                List<Long> userTeamListIds = userTeamList.stream()
+                        .map(UserTeam::getUserId)
+                        .collect(Collectors.toList());
+                List<User> userList = userService.listByIds(userTeamListIds);
                 //获取在该队伍中队员的id列表 自定义sql
-                List<User> userList = userTeamService.findTeamUsers(teamId);
+//                List<User> userList = userTeamService.findTeamUsers(teamId);
                 //组装
                 TeamUserVo teamUserVo = new TeamUserVo();
                 BeanUtils.copyProperties(team, teamUserVo);
@@ -238,8 +234,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"必须存在更新的数据");
         }
         Team updateTeam = BeanUtil.toBean(teamUpdateRequest, Team.class);
-        boolean b = updateById(updateTeam);
-        return b;
+        return updateById(updateTeam);
     }
 
     @Override
@@ -253,12 +248,12 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         if (teamId == null || teamId < 0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"队伍id非法");
         }
-        //查询队伍是否加入超过5个队伍
+        //查询是否加入超过5个队伍
         QueryWrapper<UserTeam> userTeamQueryWrapper = new QueryWrapper<>();
         userTeamQueryWrapper.eq("userId",userId);
         long count = userTeamService.count(userTeamQueryWrapper);
         if (count >= 5){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"不能同时加入查过5个队伍");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"不能同时加入超过5个队伍");
         }
         //队伍状况
         Team team = getById(teamId);

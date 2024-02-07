@@ -51,7 +51,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/java/ideajava/yupao/src/main/java/com/yupi/yupao/model/domain&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/java/yupi/匹配/yupao-backend-master&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -78,6 +78,8 @@
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.yupi.yupao.model.domain.request" />
+      <recent name="com.yupi.yupao.model.domain.enums" />
+      <recent name="com.yupi.yupao.controller" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.YuPaoApplication">
@@ -248,7 +250,39 @@
       <workItem from="1704196043363" duration="2251000" />
       <workItem from="1704264758584" duration="1422000" />
       <workItem from="1704271047718" duration="12083000" />
-      <workItem from="1704344220834" duration="1739000" />
+      <workItem from="1704344220834" duration="13775000" />
+      <workItem from="1704367375002" duration="1789000" />
+      <workItem from="1704372071283" duration="117000" />
+      <workItem from="1704372470111" duration="1634000" />
+      <workItem from="1704430842894" duration="61000" />
+      <workItem from="1704709142288" duration="915000" />
+      <workItem from="1704885430692" duration="2901000" />
+      <workItem from="1704957833831" duration="6929000" />
+      <workItem from="1705025256304" duration="7658000" />
+      <workItem from="1705215880383" duration="1856000" />
+      <workItem from="1705217844368" duration="578000" />
+      <workItem from="1705316992424" duration="814000" />
+      <workItem from="1705382630892" duration="23000" />
+      <workItem from="1705383292102" duration="32000" />
+      <workItem from="1705472535099" duration="32000" />
+      <workItem from="1706697287321" duration="35000" />
+      <workItem from="1706699495212" duration="8000" />
+      <workItem from="1706699640073" duration="5000" />
+      <workItem from="1706699671700" duration="31000" />
+      <workItem from="1706699732530" duration="64000" />
+      <workItem from="1706702008666" duration="167000" />
+      <workItem from="1706704348687" duration="6000" />
+      <workItem from="1706704383017" duration="603000" />
+      <workItem from="1706708988719" duration="20000" />
+      <workItem from="1706709189406" duration="729000" />
+      <workItem from="1706710868873" duration="264000" />
+      <workItem from="1706711871526" duration="31000" />
+      <workItem from="1706712098331" duration="78000" />
+      <workItem from="1706853762444" duration="107000" />
+      <workItem from="1706872448442" duration="206000" />
+      <workItem from="1706873010086" duration="1114000" />
+      <workItem from="1707186028628" duration="1153000" />
+      <workItem from="1707277006551" duration="18979000" />
     </task>
     <servers />
   </component>
@@ -258,6 +292,7 @@
   <component name="XDebuggerManager">
     <pin-to-top-manager>
       <pinned-members>
+        <PinnedItemInfo parentTag="org.springframework.session.web.http.SessionRepositoryFilter$SessionRepositoryRequestWrapper" memberName="response" />
         <PinnedItemInfo parentTag="org.springframework.session.web.http.SessionRepositoryFilter$SessionRepositoryRequestWrapper" memberName="requestedSessionInvalidated" />
       </pinned-members>
     </pin-to-top-manager>

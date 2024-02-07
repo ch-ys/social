@@ -1,25 +1,19 @@
 package com.yupi.yupao.service;
 
-// [编程学习交流圈](https://www.code-nav.cn/) 连接万名编程爱好者，一起优秀！20000+ 小伙伴交流分享、40+ 大厂嘉宾一对一答疑、100+ 各方向编程交流群、4000+ 编程问答参考
-
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yupi.yupao.mapper.UserTeamMapper;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.untils.AlgUntils;
 import javafx.util.Pair;
-import jodd.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 用户服务测试
@@ -54,7 +48,6 @@ public class UserServiceTest {
         Assertions.assertTrue(result);
     }
 
-    // https://www.code-nav.cn/
 
     /**
      * 测试更新用户
@@ -83,7 +76,6 @@ public class UserServiceTest {
         Assertions.assertTrue(result);
     }
 
-    // https://space.bilibili.com/12890453/
 
     /**
      * 测试获取用户

@@ -4,11 +4,13 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
-import com.yupi.yupao.model.domain.DTO.UserDto;
+import com.yupi.yupao.model.domain.dto.UserDto;
 import com.yupi.yupao.model.domain.entiy.User;
+import com.yupi.yupao.model.domain.request.UserQueryRequest;
 import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.mapper.UserMapper;
 import com.yupi.yupao.untils.AlgUntils;
@@ -232,6 +234,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return users;
     }
 
+
     /**
      * 更新用户信息
      * @param user
@@ -259,6 +262,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
         //更新
+        updateById(user);
         return userMapper.updateById(user);
     }
 
@@ -323,6 +327,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.info("recommend set cache error", e);
         }
         return users;
+    }
+
+    @Override
+    public Page<User> searchUserByQuery(UserQueryRequest userQueryRequest) {
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        //构造条件
+        List<String> searchTags = userQueryRequest.getSearchTags();
+        if (searchTags != null){
+            for (String tagName : searchTags) {
+                userQueryWrapper.like("tags",tagName);
+            }
+        }
+        String searchText = userQueryRequest.getSearchText();
+        if (searchText != null){
+            userQueryWrapper.like("username",searchText);
+        }
+        // 脱敏
+        Long pageNum = userQueryRequest.getPageNum();
+        Long pageSize = userQueryRequest.getPageSize();
+        Page<User> userPage = userMapper
+                .selectPage(new Page<User>(pageNum, pageSize), userQueryWrapper);
+        List<User> collect = userPage.getRecords()
+                .stream().map(this::getSafetyUser)
+                .collect(Collectors.toList());
+        userPage.setRecords(collect);
+        return userPage;
     }
 
     public List<User> match(User currentUser,Integer num){

@@ -9,6 +9,7 @@ import com.yupi.yupao.common.ResultUtils;
 import com.yupi.yupao.exception.BusinessException;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.model.domain.request.UserLoginRequest;
+import com.yupi.yupao.model.domain.request.UserQueryRequest;
 import com.yupi.yupao.model.domain.request.UserRegisterRequest;
 import com.yupi.yupao.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -22,9 +23,6 @@ import java.util.stream.Collectors;
 
 /**
  * 用户接口
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
 @RequestMapping("/user")
@@ -105,25 +103,25 @@ public class UserController {
         return ResultUtils.success(safetyUser);
     }
 
-    /**
-     * 根据用户名查询用户列表
-     * @param username
-     * @param request
-     * @return
-     */
-    @GetMapping("/search")
-    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
-        if (!userService.isAdmin(request)) {
-            throw new BusinessException(ErrorCode.NO_AUTH, "缺少管理员权限");
-        }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(username)) {
-            queryWrapper.like("username", username);
-        }
-        List<User> userList = userService.list(queryWrapper);
-        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
-        return ResultUtils.success(list);
-    }
+//    /**
+//     * 根据用户名查询用户列表
+//     * @param username
+//     * @param request
+//     * @return
+//     */
+//    @GetMapping("/search")
+//    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
+//        if (!userService.isAdmin(request)) {
+//            throw new BusinessException(ErrorCode.NO_AUTH, "缺少管理员权限");
+//        }
+//        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+//        if (StringUtils.isNotBlank(username)) {
+//            queryWrapper.like("username", username);
+//        }
+//        List<User> userList = userService.list(queryWrapper);
+//        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
+//        return ResultUtils.success(list);
+//    }
 
     /**
      * 删除用户
@@ -132,7 +130,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteUser(long id, HttpServletRequest request) {
         if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
@@ -144,18 +142,33 @@ public class UserController {
     }
 
     /**
+     * 根据查询文本和标签查询
+     * @param
+     * @return
+     */
+    @GetMapping("/search")
+    public BaseResponse<Page<User>> searchUsersByQuery(UserQueryRequest userQueryRequest) {
+        if (userQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
+        }
+        Page<User> userPage = userService.searchUserByQuery(userQueryRequest);
+        return ResultUtils.success(userPage);
+    }
+
+    /**
      * 根据标签列表查询
      * @param tagNameList
      * @return
      */
     @GetMapping("/search/tags")
-    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
-        if (CollectionUtils.isEmpty(tagNameList)) {
+    public BaseResponse<List<User>> searchUsersByTags(List<String> tagNameList) {
+        if (tagNameList == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
         }
         List<User> users = userService.searchUserByTagsList(tagNameList);
         return ResultUtils.success(users);
     }
+
 
     /**
      * 更新用户

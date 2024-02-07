@@ -1,16 +1,15 @@
 package com.yupi.yupao.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yupi.yupao.model.domain.request.UserQueryRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
  * 用户服务
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 public interface UserService extends IService<User> {
 
@@ -54,7 +53,6 @@ public interface UserService extends IService<User> {
 
     /**
      * 根据标签查询用户
-     *
      * @param tagNameList
      * @return
      */
@@ -67,4 +65,6 @@ public interface UserService extends IService<User> {
     User getCurrentUser(HttpServletRequest request);
 
     List<User> recommend(HttpServletRequest request, Integer num);
+
+    Page<User> searchUserByQuery(UserQueryRequest userQueryRequest);
 }

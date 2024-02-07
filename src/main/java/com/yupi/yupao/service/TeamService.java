@@ -1,6 +1,6 @@
 package com.yupi.yupao.service;
 
-import com.yupi.yupao.model.domain.VO.TeamUserVo;
+import com.yupi.yupao.model.domain.vo.TeamUserVo;
 import com.yupi.yupao.model.domain.entiy.Team;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yupi.yupao.model.domain.request.*;
