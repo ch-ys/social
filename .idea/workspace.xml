@@ -77,9 +77,9 @@
       <recent name="com.yupi.yupao.service" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.yupi.yupao.controller" />
       <recent name="com.yupi.yupao.model.domain.request" />
       <recent name="com.yupi.yupao.model.domain.enums" />
-      <recent name="com.yupi.yupao.controller" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.YuPaoApplication">
@@ -283,6 +283,7 @@
       <workItem from="1706873010086" duration="1114000" />
       <workItem from="1707186028628" duration="1153000" />
       <workItem from="1707277006551" duration="18979000" />
+      <workItem from="1707300205067" duration="3675000" />
     </task>
     <servers />
   </component>

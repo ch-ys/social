@@ -1015,11 +1015,11 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <LocalIntrospectionTimestamp>2024-02-07.04:10:16</LocalIntrospectionTimestamp>
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
-    <schema id="294" parent="1" name="store">
-      <CollationName>utf8mb3_general_ci</CollationName>
-    </schema>
-    <schema id="295" parent="1" name="sys">
+    <schema id="294" parent="1" name="sys">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </schema>
+    <schema id="295" parent="1" name="store">
+      <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
     <user id="296" parent="1" name="mysql.infoschema">
       <CanLogin>0</CanLogin>

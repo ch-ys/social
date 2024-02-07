@@ -10,5 +10,7 @@ import java.util.List;
 @Data
 public class SearchQueryRequest extends Page implements Serializable {
 
+    private Integer type;
+
     private String searchText;
 }

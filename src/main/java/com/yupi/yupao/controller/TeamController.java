@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
-
-
 @RestController
 @RequestMapping("/team")
 public class TeamController {
@@ -74,22 +72,31 @@ public class TeamController {
         return ResultUtils.success(b);
     }
 
-    @GetMapping("/list")
-    public BaseResponse<List<TeamUserVo>> listTeam(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest){
+    @GetMapping("/list/page")
+    public BaseResponse<Page<TeamUserVo>> TeamUserVoPage(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest){
         if (teamQuery == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
         }
-        List<TeamUserVo> teamUserVos = teamService.searchTeamUserList(teamQuery, httpServletRequest);
-        return ResultUtils.success(teamUserVos);
+        Page<TeamUserVo> teamUserVoPage = teamService.searchTeamUserPage(teamQuery,httpServletRequest);
+        return ResultUtils.success(teamUserVoPage);
     }
 
-    @GetMapping("/list/page")
-    public BaseResponse<Page<Team>> listPageTeam(TeamQueryRequest teamQuery){
+    @GetMapping("/list")
+    public BaseResponse<List<TeamUserVo>> listTeamUserVo(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest){
+        if (teamQuery == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
+        }
+        List<TeamUserVo> teamUserVoPage = teamService.searchTeamUser(teamQuery,httpServletRequest);
+        return ResultUtils.success(teamUserVoPage);
+    }
+
+    @GetMapping("/list/team")
+    public BaseResponse<List<Team>> listTeam(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest){
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
-        Page<Team> page = teamService.page(new Page<Team>(teamQuery.getPageNum(), teamQuery.getPageSize()));
-        return ResultUtils.success(page);
+        List<Team> teams = teamService.listTeam(teamQuery, httpServletRequest);
+        return ResultUtils.success(teams);
     }
 
     @GetMapping("/list/myCreate")

@@ -234,6 +234,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return users;
     }
 
+    @Override
+    public Page<User> searchUserByQuery(UserQueryRequest userQueryRequest) {
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        //构造条件
+        List<String> searchTags = userQueryRequest.getSearchTags();
+        if (searchTags != null){
+            for (String tagName : searchTags) {
+                userQueryWrapper.like("tags",tagName);
+            }
+        }
+        String searchText = userQueryRequest.getSearchText();
+        if (searchText != null){
+            userQueryWrapper.like("username",searchText);
+        }
+        // 脱敏
+        Long pageNum = userQueryRequest.getPageNum();
+        Long pageSize = userQueryRequest.getPageSize();
+        Page<User> userPage = userMapper
+                .selectPage(new Page<User>(pageNum, pageSize), userQueryWrapper);
+        List<User> collect = userPage.getRecords()
+                .stream().map(this::getSafetyUser)
+                .collect(Collectors.toList());
+        userPage.setRecords(collect);
+        return userPage;
+    }
+
 
     /**
      * 更新用户信息
@@ -329,31 +355,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return users;
     }
 
-    @Override
-    public Page<User> searchUserByQuery(UserQueryRequest userQueryRequest) {
-        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        //构造条件
-        List<String> searchTags = userQueryRequest.getSearchTags();
-        if (searchTags != null){
-            for (String tagName : searchTags) {
-                userQueryWrapper.like("tags",tagName);
-            }
-        }
-        String searchText = userQueryRequest.getSearchText();
-        if (searchText != null){
-            userQueryWrapper.like("username",searchText);
-        }
-        // 脱敏
-        Long pageNum = userQueryRequest.getPageNum();
-        Long pageSize = userQueryRequest.getPageSize();
-        Page<User> userPage = userMapper
-                .selectPage(new Page<User>(pageNum, pageSize), userQueryWrapper);
-        List<User> collect = userPage.getRecords()
-                .stream().map(this::getSafetyUser)
-                .collect(Collectors.toList());
-        userPage.setRecords(collect);
-        return userPage;
-    }
+
 
     public List<User> match(User currentUser,Integer num){
         //定义空间 可限制空间节省内存 需要双重循环判定 费时间

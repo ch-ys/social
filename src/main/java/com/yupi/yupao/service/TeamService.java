@@ -1,5 +1,6 @@
 package com.yupi.yupao.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.yupao.model.domain.vo.TeamUserVo;
 import com.yupi.yupao.model.domain.entiy.Team;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -19,7 +20,7 @@ public interface TeamService extends IService<Team> {
 
     Long addTeam(TeamAddRequest team, HttpServletRequest request);
 
-    List<TeamUserVo> searchTeamUserList(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
+    Page<TeamUserVo> searchTeamUserPage(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
 
     Boolean updateTeam(TeamUpdateRequest teamUpdateRequest, HttpServletRequest httpServletRequest);
 
@@ -32,4 +33,8 @@ public interface TeamService extends IService<Team> {
     List<TeamUserVo> listMyCreate(HttpServletRequest httpServletRequest);
 
     List<TeamUserVo> listMyJoin(HttpServletRequest httpServletRequest);
+
+    List<Team> listTeam(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
+
+    List<TeamUserVo> searchTeamUser(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
 }

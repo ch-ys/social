@@ -1,7 +1,7 @@
 package com.yupi.yupao.model.domain.enums;
 
 /**
- * 队伍状态枚举
+ * 通用查询类型枚举
  */
 public enum SearchTypeStatusEnum {
 

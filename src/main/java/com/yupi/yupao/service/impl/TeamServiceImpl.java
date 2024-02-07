@@ -2,6 +2,7 @@ package com.yupi.yupao.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
@@ -116,9 +117,8 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return teamId;
     }
 
-
     @Override
-    public List<TeamUserVo> searchTeamUserList(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest) {
+    public Page<TeamUserVo> searchTeamUserPage(TeamQueryRequest teamQuery,HttpServletRequest httpServletRequest) {
         QueryWrapper<Team> teamQueryWrapper = new QueryWrapper<>();
         //id查询条件
         Long id = teamQuery.getId();
@@ -153,7 +153,118 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             throw new BusinessException(ErrorCode.NO_AUTH,"无法查询非公共队伍");
         }
         teamQueryWrapper.eq("status",status);
+        //查询team
+        List<Team> list = list(teamQueryWrapper);
+        List<TeamUserVo> teamUserVoList = null;
+        if (list != null){
+            teamUserVoList = list.stream().map(team -> {
+                //获取队伍id
+                Long teamId = team.getId();
+                //获取在该队伍中队员的id列表 mybatis方案
+                QueryWrapper<UserTeam> userTeamQueryWrapper = new QueryWrapper<>();
+                userTeamQueryWrapper.eq("teamId", teamId);
+                List<UserTeam> userTeamList = userTeamService.list(userTeamQueryWrapper);
+                List<Long> userTeamListIds = userTeamList.stream()
+                        .map(UserTeam::getUserId)
+                        .collect(Collectors.toList());
+                List<User> userList = userService.listByIds(userTeamListIds);
+                //获取在该队伍中队员的id列表 自定义sql
+//                List<User> userList = userTeamService.findTeamUsers(teamId);
+                //组装
+                TeamUserVo teamUserVo = new TeamUserVo();
+                BeanUtils.copyProperties(team, teamUserVo);
+                teamUserVo.setUserList(userList);
+                return teamUserVo;
+            }).collect(Collectors.toList());
+        }
+        Long pageNum = teamQuery.getPageNum();
+        Long pageSize = teamQuery.getPageSize();
+        Page<TeamUserVo> teamUserVoPage = new Page<>(pageNum, pageSize);
+        teamUserVoPage.setRecords(teamUserVoList);
+        return teamUserVoPage;
+    }
 
+    @Override
+    public List<Team> listTeam(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest) {
+        QueryWrapper<Team> teamQueryWrapper = new QueryWrapper<>();
+        //id查询条件
+        Long id = teamQuery.getId();
+        if (id != null && id > 0){
+            teamQueryWrapper.eq("id",id);
+        }
+        //名称查询条件
+        String name = teamQuery.getName();
+        if (StringUtils.isNotBlank(name)){
+            teamQueryWrapper.like("name",name);
+        }
+        //查询名称或者描述
+        String searchText = teamQuery.getSearchText();
+        if (StringUtils.isNotBlank(searchText)){
+            teamQueryWrapper.and(qw -> qw.like("name",searchText)
+                    .or().like("description",searchText));
+        }
+        //查询人数多余
+        Integer maxNum = teamQuery.getMaxNum();
+        if (maxNum != null && maxNum > 0){
+            teamQueryWrapper.eq("maxNum", maxNum);
+        }
+        //时间大于当前
+        Date expireTime = teamQuery.getExpireTime();
+        teamQueryWrapper.and(qw ->qw.gt("expireTime",new Date()).or().isNull("expireTime"));
+        //根据状态查询队伍(只有管理员可以查看非公共队伍）
+        Integer status = teamQuery.getStatus();
+        if (status == null){
+            status = TeamStatusEnum.PUBLIC.getValue();
+        }
+        if (!userService.isAdmin(httpServletRequest) && !status.equals(TeamStatusEnum.PUBLIC.getValue())){
+            throw new BusinessException(ErrorCode.NO_AUTH,"无法查询非公共队伍");
+        }
+        teamQueryWrapper.eq("status",status);
+        //查询team
+        List<Team> list = list(teamQueryWrapper);
+        return list;
+    }
+
+    @Override
+    public List<TeamUserVo> searchTeamUser(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest) {
+        if (!userService.isAdmin(httpServletRequest)){
+            throw new BusinessException(ErrorCode.NO_AUTH,"该接口需要管理员权限");
+        }
+        QueryWrapper<Team> teamQueryWrapper = new QueryWrapper<>();
+        //id查询条件
+        Long id = teamQuery.getId();
+        if (id != null && id > 0){
+            teamQueryWrapper.eq("id",id);
+        }
+        //名称查询条件
+        String name = teamQuery.getName();
+        if (StringUtils.isNotBlank(name)){
+            teamQueryWrapper.like("name",name);
+        }
+        //查询名称或者描述
+        String searchText = teamQuery.getSearchText();
+        if (StringUtils.isNotBlank(searchText)){
+            teamQueryWrapper.and(qw -> qw.like("name",searchText)
+                    .or().like("description",searchText));
+        }
+        //查询人数多余
+        Integer maxNum = teamQuery.getMaxNum();
+        if (maxNum != null && maxNum > 0){
+            teamQueryWrapper.eq("maxNum", maxNum);
+        }
+        //时间大于当前
+        Date expireTime = teamQuery.getExpireTime();
+        teamQueryWrapper.and(qw ->qw.gt("expireTime",new Date()).or().isNull("expireTime"));
+        //根据状态查询队伍(只有管理员可以查看非公共队伍）
+        Integer status = teamQuery.getStatus();
+        if (status == null){
+            status = TeamStatusEnum.PUBLIC.getValue();
+        }
+        if (!userService.isAdmin(httpServletRequest) && !status.equals(TeamStatusEnum.PUBLIC.getValue())){
+            throw new BusinessException(ErrorCode.NO_AUTH,"无法查询非公共队伍");
+        }
+        teamQueryWrapper.eq("status",status);
+        //查询team
         List<Team> list = list(teamQueryWrapper);
         List<TeamUserVo> teamUserVoList = null;
         if (list != null){
@@ -420,6 +531,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 .collect(Collectors.toList());
         return collect;
     }
+
 }
 
 
