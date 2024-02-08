@@ -14,6 +14,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -70,6 +71,9 @@
     <option name="notificationShown" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.yupi.yupao.datasource" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\java\ideajava\yupao\src\main\java\com\yupi\yupao\model\domain" />
     </key>
@@ -77,6 +81,7 @@
       <recent name="com.yupi.yupao.service" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.yupi.yupao.datasource" />
       <recent name="com.yupi.yupao.controller" />
       <recent name="com.yupi.yupao.model.domain.request" />
       <recent name="com.yupi.yupao.model.domain.enums" />
@@ -286,6 +291,7 @@
       <workItem from="1707300205067" duration="3675000" />
       <workItem from="1707308797264" duration="5787000" />
       <workItem from="1707359456674" duration="1312000" />
+      <workItem from="1707360963525" duration="10515000" />
     </task>
     <servers />
   </component>
