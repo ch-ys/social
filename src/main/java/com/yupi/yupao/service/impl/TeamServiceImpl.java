@@ -142,7 +142,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             teamQueryWrapper.eq("maxNum", maxNum);
         }
         //时间大于当前
-        Date expireTime = teamQuery.getExpireTime();
         teamQueryWrapper.and(qw ->qw.gt("expireTime",new Date()).or().isNull("expireTime"));
         //根据状态查询队伍(只有管理员可以查看非公共队伍）
         Integer status = teamQuery.getStatus();

@@ -248,15 +248,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (searchText != null){
             userQueryWrapper.like("username",searchText);
         }
-        // 脱敏
+        // 分页page
         Long pageNum = userQueryRequest.getPageNum();
         Long pageSize = userQueryRequest.getPageSize();
-        Page<User> userPage = userMapper
-                .selectPage(new Page<User>(pageNum, pageSize), userQueryWrapper);
-        List<User> collect = userPage.getRecords()
-                .stream().map(this::getSafetyUser)
-                .collect(Collectors.toList());
-        userPage.setRecords(collect);
+        Page<User> userPage = new Page<>(pageNum,pageSize);
+        // 查询数据 注入
+        List<User> list = list(userQueryWrapper);
+        userPage.setRecords(list);
         return userPage;
     }
 
