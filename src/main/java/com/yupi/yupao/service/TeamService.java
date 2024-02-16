@@ -16,8 +16,6 @@ import java.util.List;
 */
 public interface TeamService extends IService<Team> {
 
-
-
     Long addTeam(TeamAddRequest team, HttpServletRequest request);
 
     Page<TeamUserVo> searchTeamUserPage(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
@@ -37,4 +35,6 @@ public interface TeamService extends IService<Team> {
     List<Team> listTeam(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
 
     List<TeamUserVo> searchTeamUser(TeamQueryRequest teamQuery, HttpServletRequest httpServletRequest);
+
+    List<Long> searchFromEs(String text);
 }

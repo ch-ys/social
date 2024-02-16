@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
+import com.yupi.yupao.model.domain.dto.NewsEsDTO;
+import com.yupi.yupao.model.domain.dto.TeamEsDTO;
 import com.yupi.yupao.model.domain.entiy.News;
 import com.yupi.yupao.model.domain.request.NewsAddRequest;
 import com.yupi.yupao.model.domain.request.NewsQueryRequest;
@@ -13,12 +15,19 @@ import com.yupi.yupao.model.domain.request.NewsUpdateRequest;
 import com.yupi.yupao.service.NewsService;
 import com.yupi.yupao.mapper.NewsMapper;
 import com.yupi.yupao.service.UserService;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author chenmoys
@@ -31,6 +40,8 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News>
 
     @Resource
     private UserService userService;
+    @Resource
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
 
     @Override
     public Boolean addNews(NewsAddRequest newsAddRequest, HttpServletRequest request) {
@@ -61,7 +72,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News>
     }
 
     @Override
-    public boolean deleteNews(Integer id, HttpServletRequest httpServletRequest) {
+    public Boolean deleteNews(Integer id, HttpServletRequest httpServletRequest) {
         //权限验证
         if (!userService.isAdmin(httpServletRequest)){
             throw new BusinessException(ErrorCode.NO_AUTH,"需要管理员才有权限删除");
@@ -117,9 +128,11 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News>
         Long pageSize = newsQueryRequest.getPageSize();
         if (searchText != null){
             newsQueryWrapper.and(qw -> {
-                qw.like("title", searchText)
-                        .or()
-                        .like("text", searchText);
+                List<Long> longs = searchFromEs(searchText);
+                qw.like("title", searchText);
+                if (longs != null) {
+                    qw.or().in("id", longs);
+                }
             });
         }
         //查询标题或者文本
@@ -138,9 +151,11 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News>
         String searchText = newsQueryRequest.getSearchText();
         if (searchText != null){
             newsQueryWrapper.and(qw -> {
-                qw.like("title", searchText)
-                        .or()
-                        .like("text", searchText);
+                List<Long> longs = searchFromEs(searchText);
+                qw.like("title", searchText);
+                if (longs != null) {
+                    qw.or().in("id", longs);
+                }
             });
         }
         List<String> searchTags = newsQueryRequest.getSearchTags();
@@ -150,6 +165,25 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News>
             }
         }
         return list(newsQueryWrapper);
+    }
+
+    @Override
+    public List<Long> searchFromEs(String text) {
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        // 按关键词检索
+        boolQueryBuilder.must(QueryBuilders.matchQuery("text", text));
+        // 构造查询
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .build();
+        SearchHits<NewsEsDTO> search = elasticsearchRestTemplate.search(searchQuery, NewsEsDTO.class);
+        if (!search.hasSearchHits()){
+            return null;
+        }
+        List<Long> collect = search.getSearchHits().stream()
+                .map(searchHit -> searchHit.getContent().getId())
+                .collect(Collectors.toList());
+        return collect;
     }
 }
 

@@ -35,8 +35,4 @@ public class DateSourceRegistry {
     public DataSource getDataSource(Integer type){
         return dataSourceHashMap.get(type);
     }
-
-
-
-
 }

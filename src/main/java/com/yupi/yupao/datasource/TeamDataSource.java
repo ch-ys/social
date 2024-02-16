@@ -35,11 +35,16 @@ public class TeamDataSource implements DataSource {
         QueryWrapper<Team> teamQueryWrapper = new QueryWrapper<>();
         //查询名称或者描述
         if (StringUtils.isNotBlank(searchText)){
-            teamQueryWrapper.and(qw -> qw.like("name",searchText)
-                    .or().like("description",searchText));
+            List<Long> longs = teamService.searchFromEs(searchText);
+            teamQueryWrapper.and(qw -> {
+                qw.like("name",searchText);
+                if (longs != null){
+                    qw.or().in("id",longs);
+                }
+            });
         }
         //时间大于当前
-        teamQueryWrapper.and(qw ->qw.gt("expireTime",new Date()).or().isNull("expireTime"));
+        teamQueryWrapper.and(qw -> qw.gt("expireTime",new Date()).or().isNull("expireTime"));
         //查询公共队伍(只有管理员可以查看非公共队伍）
         Integer status = TeamStatusEnum.PUBLIC.getValue();
         teamQueryWrapper.eq("status",status);

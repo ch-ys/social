@@ -19,11 +19,13 @@ public interface NewsService extends IService<News> {
 
     Boolean addNews(NewsAddRequest newsAddRequest, HttpServletRequest request);
 
-    boolean deleteNews(Integer id, HttpServletRequest httpServletRequest);
+    Boolean deleteNews(Integer id, HttpServletRequest httpServletRequest);
 
     Boolean updateNews(NewsUpdateRequest newsAddRequest, HttpServletRequest httpServletRequest);
 
     Page<News> listPageNews(NewsQueryRequest newsQueryRequest);
 
     List<News> listNews(NewsQueryRequest newsQueryRequest, HttpServletRequest httpServletRequest);
+
+    List<Long> searchFromEs(String text);
 }

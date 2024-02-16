@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
-import com.yupi.yupao.model.domain.dto.TeamUpdateDto;
+import com.yupi.yupao.model.domain.dto.TeamEsDTO;
+import com.yupi.yupao.model.domain.dto.TeamUpdateDTO;
 import com.yupi.yupao.model.domain.vo.TeamUserVo;
 import com.yupi.yupao.model.domain.entiy.Team;
 import com.yupi.yupao.model.domain.entiy.User;
@@ -19,18 +20,27 @@ import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.service.UserTeamService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -46,6 +56,8 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
     private UserTeamService userTeamService;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
     private static final Long OneTeam = 1L;
 
     @Override
@@ -133,8 +145,13 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         //查询名称或者描述
         String searchText = teamQuery.getSearchText();
         if (StringUtils.isNotBlank(searchText)){
-            teamQueryWrapper.and(qw -> qw.like("name",searchText)
-                    .or().like("description",searchText));
+            List<Long> longs = searchFromEs(searchText);
+            teamQueryWrapper.and(qw -> {
+                qw.like("name",searchText);
+                if (longs != null){
+                qw.or().in("id",longs);
+                }
+            });
         }
         //查询人数多余
         Integer maxNum = teamQuery.getMaxNum();
@@ -199,8 +216,13 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         //查询名称或者描述
         String searchText = teamQuery.getSearchText();
         if (StringUtils.isNotBlank(searchText)){
-            teamQueryWrapper.and(qw -> qw.like("name",searchText)
-                    .or().like("description",searchText));
+            List<Long> longs = searchFromEs(searchText);
+            teamQueryWrapper.and(qw -> {
+                qw.like("name",searchText);
+                if (longs != null){
+                    qw.or().in("id",longs);
+                }
+            });
         }
         //查询人数多余
         Integer maxNum = teamQuery.getMaxNum();
@@ -243,8 +265,13 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         //查询名称或者描述
         String searchText = teamQuery.getSearchText();
         if (StringUtils.isNotBlank(searchText)){
-            teamQueryWrapper.and(qw -> qw.like("name",searchText)
-                    .or().like("description",searchText));
+            List<Long> longs = searchFromEs(searchText);
+            teamQueryWrapper.and(qw -> {
+                qw.like("name",searchText);
+                if (longs != null){
+                    qw.or().in("id",longs);
+                }
+            });
         }
         //查询人数多余
         Integer maxNum = teamQuery.getMaxNum();
@@ -288,6 +315,25 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             }).collect(Collectors.toList());
         }
         return teamUserVoList;
+    }
+
+    @Override
+    public List<Long> searchFromEs(String text) {
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        // 按关键词检索
+        boolQueryBuilder.must(QueryBuilders.matchQuery("description", text));
+        // 构造查询
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .build();
+        SearchHits<TeamEsDTO> search = elasticsearchRestTemplate.search(searchQuery, TeamEsDTO.class);
+        if (!search.hasSearchHits()){
+            return null;
+        }
+        List<Long> collect = search.getSearchHits().stream()
+                .map(searchHit -> searchHit.getContent().getId())
+                .collect(Collectors.toList());
+        return collect;
     }
 
     @Override
@@ -339,7 +385,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             }
         }
         //验证数据是否都为空
-        TeamUpdateDto teamUpdateDto = BeanUtil.toBean(teamUpdateRequest, TeamUpdateDto.class);
+        TeamUpdateDTO teamUpdateDto = BeanUtil.toBean(teamUpdateRequest, TeamUpdateDTO.class);
         if (teamUpdateDto == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"必须存在更新的数据");
         }
@@ -530,7 +576,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 .collect(Collectors.toList());
         return collect;
     }
-
 }
 
 

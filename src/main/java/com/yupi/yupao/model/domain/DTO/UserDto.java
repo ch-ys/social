@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class UserDto implements Serializable {
+public class UserDTO implements Serializable {
 
     /**
      * 用户昵称

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupao.common.ErrorCode;
 import com.yupi.yupao.exception.BusinessException;
-import com.yupi.yupao.model.domain.dto.UserDto;
+import com.yupi.yupao.model.domain.dto.UserDTO;
 import com.yupi.yupao.model.domain.entiy.User;
 import com.yupi.yupao.model.domain.request.UserQueryRequest;
 import com.yupi.yupao.service.UserService;
@@ -276,7 +276,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (updateUser == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"修改用户不存在");
         }
-        UserDto userDto = BeanUtil.toBean(user, UserDto.class);
+        UserDTO userDto = BeanUtil.toBean(user, UserDTO.class);
         if (ObjectUtil.isEmpty(userDto)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
         }
